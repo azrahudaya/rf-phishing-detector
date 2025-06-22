@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Check URL{% endblock %}
+
+{% block head %}
+    <style>
+        h2 { color: #2c3e50; text-align: center; }
+        p.description { text-align: center; margin-bottom: 1.5rem; }
+        form { display: flex; flex-direction: column; gap: 1rem; }
+        input[type="url"] { padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+        input[type="url"]:focus { border-color: #007bff; outline: none; box-shadow: 0 0 0 2px rgba(0,123,255,0.25); }
+        button { padding: 0.8rem 1.5rem; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; position: relative; }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #5a9bd1; cursor: not-allowed; }
+        .error { color: #e74c3c; background-color: #fbe2e2; border: 1px solid #e74c3c; padding: 1rem; border-radius: 4px; margin-top: 1rem; text-align: left; }
+        .loader {
+            display: none; /* Hidden by default */
+            font-size: 1rem;
+            margin: 1.5rem auto;
+            text-align: center;
+            color: #555;
+        }
+        
+        /* History Section Styles */
+        .history-section { margin-top: 3rem; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 0.5rem; }
+        .history-header h3 { margin: 0; color: #34495e; }
+        .delete-btn { padding: 0.5rem 1rem; background-color: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid #ddd; }
+        th { background-color: #ecf0f1; }
+        td.result-phishing { color: #e74c3c; font-weight: bold; }
+        td.result-legitimate { color: #2ecc71; font-weight: bold; }
+        .no-history { text-align: center; color: #777; margin-top: 2rem; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2>URL Analyzer</h2>
+    <p class="description">
+        Enter a full URL below to check if it's a phishing site. Your recent checks will be listed below.
+    </p>
+    <form id="predict-form" action="/predict" method="post">
+        <input type="url" name="url" placeholder="https://example.com" required>
+        <button id="submit-btn" type="submit">Analyze URL</button>
+    </form>
+
+    <div id="loader" class="loader">
+        <p>Analyzing... Please wait.</p>
+    </div>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <!-- History Section -->
+    <div class="history-section">
+        <div class="history-header">
+            <h3>Check History</h3>
+            {% if history %}
+            <form action="{{ url_for('clear_history') }}" method="post">
+                <button type="submit" class="delete-btn">Clear History</button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% if history %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+                        <td>{{ item.url }}</td>
+                        <td class="result-{{ item.result.lower() }}">{{ item.result }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-history">You have no check history yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('predict-form').addEventListener('submit', function() {
+        document.getElementById('loader').style.display = 'block';
+        const submitButton = document.getElementById('submit-btn');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}About The Project{% endblock %}
+
+{% block head %}
+<style>
+    .about-content h2 {
+        color: #2c3e50;
+        border-bottom: 2px solid #ecf0f1;
+        padding-bottom: 0.5rem;
+        margin-top: 2rem;
+    }
+    .about-content p, .about-content li {
+        line-height: 1.8;
+        color: #555;
+    }
+    .illustration-placeholder {
+        width: 100%;
+        height: 250px;
+        background-color: #ecf0f1;
+        border: 2px dashed #bdc3c7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7f8c8d;
+        font-style: italic;
+        margin: 1.5rem 0;
+        border-radius: 8px;
+    }
+    .feature-list {
+        columns: 2;
+        -webkit-columns: 2;
+        -moz-columns: 2;
+        padding-left: 20px;
+    }
+    @media (max-width: 600px) {
+        .feature-list {
+            columns: 1;
+            -webkit-columns: 1;
+            -moz-columns: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-content">
+    <h2>About The Phishing Detector</h2>
+    <p>
+        This tool is a web application designed to detect phishing websites using a machine learning model.
+        It analyzes various characteristics of a URL to determine whether it is likely a legitimate site or a malicious one
+        attempting to steal sensitive information.
+    </p>
+
+    <h2>Model & Accuracy</h2>
+    <p>
+        The core of this detector is a <strong>Random Forest Classifier</strong>, a powerful ensemble learning method that operates by constructing a multitude of decision trees at training time. For prediction, it outputs the class that is the mode of the classes of the individual trees. This method is highly effective at handling complex datasets and avoiding overfitting.
+    </p>
+    <p>
+        Based on our test dataset, the model achieves an accuracy of approximately <strong>96.4%</strong>, making it a reliable tool for identifying potential threats.
+    </p>
+
+    <div class="illustration-placeholder">[Illustration: Diagram showing Random Forest with multiple decision trees]</div>
+
+    <h2>Application Flow</h2>
+    <p>
+        The detection process follows a simple but effective flow:
+    </p>
+    <ol>
+        <li><strong>URL Input:</strong> The user enters a URL into the "Check URL" page.</li>
+        <li><strong>Feature Extraction:</strong> The application extracts 30 distinct features from the URL string and its domain properties.</li>
+        <li><strong>Model Prediction:</strong> The extracted features are fed into the pre-trained Random Forest model.</li>
+        <li><strong>Result Display:</strong> The model returns a prediction ("Phishing" or "Legitimate"), which is displayed to the user along with the feature breakdown.</li>
+    </ol>
+
+    <div class="illustration-placeholder">[Illustration: Flowchart of the application logic from input to output]</div>
+
+    <h2>Features Used for Detection</h2>
+    <p>The model's prediction is based on the following 30 features:</p>
+    <ul class="feature-list">
+        {% for feature_name in feature_names %}
+            <li>{{ feature_name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %} 

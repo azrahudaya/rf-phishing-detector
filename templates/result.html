@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Result{% endblock %}
+
+{% block head %}
+    <style>
+        h2 { color: #2c3e50; text-align: center; }
+        .result-phishing { color: #e74c3c; font-size: 1.5rem; font-weight: bold; text-align: center; border: 2px solid #e74c3c; padding: 1rem; border-radius: 5px; background-color: #fbe2e2; }
+        .result-legitimate { color: #2ecc71; font-size: 1.5rem; font-weight: bold; text-align: center; border: 2px solid #2ecc71; padding: 1rem; border-radius: 5px; background-color: #eafaf1; }
+        .url-analyzed { word-wrap: break-word; text-align: center; margin: 1.5rem 0; font-style: italic; color: #555; }
+        h3 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 0.5rem; margin-top: 2rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid #ddd; }
+        th { background-color: #ecf0f1; }
+        .back-link { display: block; margin-top: 2rem; padding: 0.8rem 1.5rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px; transition: background-color 0.2s; text-align: center; }
+        .back-link:hover { background-color: #2980b9; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2>Analysis Result</h2>
+    
+    {% if result == "Phishing" %}
+        <p class="result-phishing">This URL is classified as: <strong>{{ result }}</strong></p>
+    {% else %}
+        <p class="result-legitimate">This URL is classified as: <strong>{{ result }}</strong></p>
+    {% endif %}
+
+    <p class="url-analyzed"><strong>Analyzed URL:</strong> {{ url }}</p>
+
+    <h3>Prediction Reasoning</h3>
+    <p>The prediction is based on the following features extracted from the URL:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Feature Name</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feature, value in reasoning.items() %}
+            <tr>
+                <td>{{ feature }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="/" class="back-link">Check Another URL</a>
+{% endblock %} 
